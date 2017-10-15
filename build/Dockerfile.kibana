@@ -1,0 +1,5 @@
+ARG VERSION
+
+FROM docker.elastic.co/kibana/kibana:${VERSION}
+
+RUN /usr/share/kibana/bin/kibana-plugin remove x-pack

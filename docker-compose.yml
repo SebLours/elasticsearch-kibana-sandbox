@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  # needed on host: sudo sysctl -w vm.max_map_count=262144
+  elasticsearch:
+    build:
+      context: ./build
+      dockerfile: Dockerfile.elasticsearch
+      args:
+        VERSION: ${ELASTICSEARCH_VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-elasticsearch
+    image: ${COMPOSE_PROJECT_NAME}/elasticsearch
+    environment:
+        DOMAIN_NAME: elasticsearch.${COMPOSE_PROJECT_NAME}.dev
+    ports:
+      - 9200:9200
+
+  kibana:
+    build:
+      context: ./build
+      dockerfile: Dockerfile.kibana
+      args:
+        VERSION: ${ELASTICSEARCH_VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-kibana
+    image: ${COMPOSE_PROJECT_NAME}/kibana
+    environment:
+      - DOMAIN_NAME=kibana.${COMPOSE_PROJECT_NAME}.dev
+      - SERVER_NAME=kibana.${COMPOSE_PROJECT_NAME}.dev
+      - SERVER_HOST=kibana.${COMPOSE_PROJECT_NAME}.dev
+      - ELASTICSEARCH_URL=http://elasticsearch.${COMPOSE_PROJECT_NAME}.dev:9200
+      - XPACK_GRAPH_ENABLED=false
+      - XPACK_MONITORING_ENABLED=false
+      - XPACK_REPORTING_ENABLED=false
+      - XPACK_SECURITY_ENABLED=false
+      - XPACK_ML_ENABLED=false
